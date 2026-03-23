@@ -1,0 +1,21 @@
+.ui-card {
+  background: rgba(30, 41, 59, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  transition: all var(--transition-normal);
+}
+
+.ui-card.clickable {
+  cursor: pointer;
+}
+
+.ui-card.clickable:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-6px);
+  border-color: var(--color-primary);
+  background: rgba(30, 41, 59, 0.7);
+}
