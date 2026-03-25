@@ -1,6 +1,7 @@
 const pool = require('./db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const path = require('path');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key'; 
 
@@ -125,6 +126,14 @@ const login = async (req, res) => {
       { expiresIn: '24h' }
     );
 
+    // Set token as cookie (expires in 24 hours)
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    });
+
     res.status(200).json({
       message: 'Login successful',
       status: 'success',
@@ -142,9 +151,40 @@ const login = async (req, res) => {
   }
 };
 
+const renderLoginPage = (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'login.html'));
+};
+
+const renderRegisterPage = (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'register.html'));
+};
+
+const logout = (req, res) => {
+  res.clearCookie('token');
+  res.status(200).json({
+    message: 'Logout successful',
+    status: 'success',
+    status_code: 200,
+    data: null
+  });
+};
+
+const checkAuth = (req, res) => {
+  res.status(200).json({
+    message: 'User authenticated',
+    status: 'success',
+    status_code: 200,
+    data: { user: req.user }
+  });
+};
+
 module.exports = {
   getHome,
   getApi,
   register,
-  login
+  login,
+  logout,
+  checkAuth,
+  renderLoginPage,
+  renderRegisterPage
 };
