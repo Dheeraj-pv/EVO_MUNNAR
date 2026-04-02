@@ -12,5 +12,8 @@ router.post('/register', controller.register);
 router.post('/login', controller.login);
 router.post('/logout', requireAuth, controller.logout);
 router.get('/check-auth', requireAuth, controller.checkAuth);
+router.get('/get_allTaxiDetails', requireAuth, controller.get_allTaxiDetails);
+router.get('/get_allHotelDetails', requireAuth, controller.get_allHotelDetails);
+router.get('/bill', requireAuth, controller.renderBill);
 
 module.exports = router;

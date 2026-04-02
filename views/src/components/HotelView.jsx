@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Card from './Card';
 import Button from './Button';
 import './HotelView.css';
@@ -36,7 +36,7 @@ const initialRooms = [
   },
 ];
 
-const HotelView = ({ isAdmin }) => {
+const HotelView = ({ isAdmin, hotelDetails = [] }) => {
   const [rooms, setRooms] = useState(initialRooms);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -45,6 +45,40 @@ const HotelView = ({ isAdmin }) => {
   const [newRoom, setNewRoom] = useState({
     name: '', type: 'Standard', capacity: '', price: '', image: '', description: '', amenities: ''
   });
+
+  useEffect(() => {
+    if (hotelDetails && hotelDetails.length > 0) {
+      const mappedRooms = hotelDetails.map((room) => {
+        let amenities = [];
+        if (Array.isArray(room.amenities)) {
+          amenities = room.amenities;
+        } else if (room.amenities) {
+          try {
+            amenities = JSON.parse(room.amenities);
+            if (!Array.isArray(amenities)) {
+              amenities = [];
+            }
+          } catch (e) {
+            amenities = String(room.amenities).split(',').map((item) => item.trim()).filter(Boolean);
+          }
+        }
+
+        return {
+          id: room.id,
+          name: room.name,
+          type: room.type,
+          capacity: `${room.capacity_adults || 0} Adults${room.capacity_children ? `, ${room.capacity_children} Children` : ''}`,
+          price: `₹ ${Number(room.rate || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+          image: room.image || 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&q=80&w=800',
+          amenities,
+          description: room.description || 'No description available.',
+        };
+      });
+      setRooms(mappedRooms);
+    } else {
+      setRooms(initialRooms);
+    }
+  }, [hotelDetails]);
 
   const handleAddRoom = (e) => {
     e.preventDefault();
