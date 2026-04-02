@@ -7,12 +7,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 // Controller functions
 const getHome = (req, res) => {
-  res.status(200).json({
-    message: 'Hello World!',
-    status: 'success',
-    status_code: 200,
-    data: null
-  });
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 };
 
 const getApi = async (req, res) => {
@@ -169,6 +164,46 @@ const logout = (req, res) => {
   });
 };
 
+const get_allTaxiDetails = async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT taxi_id AS id, name, model, vh_number, availability, rate FROM taxi WHERE availability = "yes"');
+    res.status(200).json({
+      message: 'Taxi details retrieved successfully',
+      status: 'success',
+      status_code: 200,
+      data: rows
+    });
+  } catch (err) {
+    console.error('Get taxi details error:', err);
+    res.status(500).json({
+      message: 'Failed to retrieve taxi details',
+      status: 'failure',
+      status_code: 500,
+      data: { error: err.message }
+    });
+  }
+};
+
+const get_allHotelDetails = async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT hotel_id, name, type, capacity_children, capacity_adults, rate, description, amenities FROM hotel');
+    res.status(200).json({
+      message: 'Hotel details retrieved successfully',
+      status: 'success',
+      status_code: 200,
+      data: rows
+    });
+  } catch (err) {
+    console.error('Get hotel details error:', err);
+    res.status(500).json({
+      message: 'Failed to retrieve hotel details',
+      status: 'failure',
+      status_code: 500,
+      data: { error: err.message }
+    });
+  }
+};
+
 const checkAuth = (req, res) => {
   res.status(200).json({
     message: 'User authenticated',
@@ -178,6 +213,11 @@ const checkAuth = (req, res) => {
   });
 };
 
+const renderBill = (req, res) => {
+  const { pickup, dropoff, rate, distance, total } = req.query;
+  res.render('bill', { pickup, dropoff, rate, distance, total });
+};
+
 module.exports = {
   getHome,
   getApi,
@@ -185,6 +225,9 @@ module.exports = {
   login,
   logout,
   checkAuth,
+  get_allTaxiDetails,
+  get_allHotelDetails,
+  renderBill,
   renderLoginPage,
   renderRegisterPage
 };

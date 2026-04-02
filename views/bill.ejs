@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taxi Bill</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .bill-container { max-width: 600px; margin: 0 auto; border: 1px solid #ccc; padding: 20px; }
+        .bill-header { text-align: center; border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-bottom: 20px; }
+        .bill-details { margin-bottom: 20px; }
+        .bill-details div { margin-bottom: 10px; }
+        .bill-total { font-weight: bold; font-size: 1.2em; }
+        .print-btn { display: block; margin: 20px auto; padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer; }
+        .print-btn:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="bill-container">
+        <div class="bill-header">
+            <h1>Taxi Bill</h1>
+            <p>Thank you for using our service!</p>
+        </div>
+        <div class="bill-details">
+            <div><strong>Pickup Location:</strong> <%= pickup %></div>
+            <div><strong>Drop-off Location:</strong> <%= dropoff %></div>
+            <div><strong>Per KM Charge:</strong> ₹<%= rate %></div>
+            <div><strong>Total Distance:</strong> <%= distance %></div>
+            <div class="bill-total"><strong>Total Price:</strong> ₹<%= total %></div>
+        </div>
+        <button class="print-btn" onclick="window.print()">Print Bill</button>
+    </div>
+</body>
+</html>
